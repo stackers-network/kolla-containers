@@ -30,6 +30,8 @@ jobs:
         python3 -m venv .
         . bin/activate
         if [ "$OPENSTACK_VERSION" == "master" ]; then KOLLA_BRANCH_NAME="master"; else KOLLA_BRANCH_NAME="stable/$OPENSTACK_VERSION"; fi
+        echo OpenStack Version: $OPENSTACK_VERSION
+        echo Kolla Branch Name: stable/$KOLLA_BRANCH_NAME
         git clone -b ${KOLLA_BRANCH_NAME} https://opendev.org/openstack/kolla
         cd kolla
         pip install --upgrade pip
