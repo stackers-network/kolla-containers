@@ -1,0 +1,25 @@
+name: Docker-in-Docker CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run Docker commands
+      run: |
+        docker info
+        docker run hello-world
