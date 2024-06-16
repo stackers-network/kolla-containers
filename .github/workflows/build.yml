@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        OPENSTACK_VERSION: [ '2023.2', '2024.1', 'master' ]
+
     services:
       docker:
         image: docker:dind
@@ -21,5 +25,24 @@ jobs:
 
     - name: Run Docker commands
       run: |
-        docker info
-        docker run hello-world
+        apk add git bash curl python3 py3-pip libcap patch
+        export TIMESTAMP=$(date +%s)
+        python3 -m venv .
+        . bin/activate
+        if [ "$OPENSTACK_VERSION" == "master" ]; then KOLLA_BRANCH_NAME="master"; else KOLLA_BRANCH_NAME="stable/$OPENSTACK_VERSION"; fi
+        git clone -b ${KOLLA_BRANCH_NAME} https://opendev.org/openstack/kolla
+        cd kolla
+        pip install --upgrade pip
+        pip install "docker>=6.0.0,<7.0.0"
+        pip install "requests<2.32"
+        pip install -r requirements.txt
+        cd ..
+        kolla/tools/build.py \
+          --config-file kolla-build.conf \
+          --template-override kolla-template-overrides.j2 \
+          --base ${DISTRO} \
+          --base-tag ${DISTRO_VERSION} \
+          --tag ${OPENSTACK_VERSION}-${DISTRO}-${DISTRO_VERSION}-stn-${EPOCH_TODAY}-testing \
+          --push \
+          --quiet
+
