@@ -49,6 +49,5 @@ jobs:
           --base ${DISTRO} \
           --base-tag ${DISTRO_VERSION} \
           --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-${TIME_STAMP}-testing \
-          --push \
-          --quiet
+          --push
 
