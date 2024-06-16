@@ -55,6 +55,6 @@ jobs:
           --template-override kolla-template-overrides.j2 \
           --base ${DISTRO} \
           --base-tag ${DISTRO_VERSION} \
-          --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-${TIME_STAMP}-testing \
+          --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-${TIME_STAMP} \
           --push
 
