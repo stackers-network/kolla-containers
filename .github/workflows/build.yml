@@ -1,6 +1,8 @@
-name: Docker-in-Docker CI
+name: Kolla Containers Release
 
 on:
+  schedule:
+    - cron: "0 0 * * 0"
   push:
     branches: [ main ]
   pull_request:
