@@ -45,7 +45,7 @@ jobs:
         echo Kolla Branch Name: stable/$KOLLA_BRANCH_NAME
         git clone -b ${KOLLA_BRANCH_NAME} https://opendev.org/openstack/kolla
         cd kolla
-        pip install --upgrade pip
+        pip install --upgrade pip setuptools
         pip install -r requirements.txt
         cd ..
         kolla/tools/build.py \
