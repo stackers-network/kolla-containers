@@ -19,7 +19,8 @@ jobs:
 
     strategy:
       matrix:
-        openstack_version: [ '2024.2', '2024.1']
+        openstack_version: [ '2024.2', '2024.1' ]
+        architecture: [ 'x86_64' ]
 
     services:
       docker:
@@ -43,6 +44,7 @@ jobs:
         echo Kolla Containers Build #: $TIME_STAMP
         echo OpenStack Version: ${{ matrix.openstack_version }}
         echo Kolla Branch Name: stable/$KOLLA_BRANCH_NAME
+        echo Architecture: ${{ matrix.architecture }}
         git clone -b ${KOLLA_BRANCH_NAME} https://opendev.org/openstack/kolla
         cd kolla
         pip install --upgrade pip setuptools docker
@@ -53,5 +55,8 @@ jobs:
           --template-override kolla-template-overrides.j2 \
           --base ${DISTRO} \
           --base-tag ${DISTRO_VERSION} \
+          --platform linux/${{ matrix.architecture }}
+          --base-arch ${{ matrix.architecture }}
           --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-${TIME_STAMP} \
+          --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-latest \
           --push
