@@ -1,0 +1,57 @@
+name: Kolla Containers - Master Build
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DISTRO: 'rocky'
+  DISTRO_VERSION: '9'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        openstack_version: [ 'master']
+
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Log in to registry
+      run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Run Kolla Build
+      run: |
+        sudo apt install -y git bash curl python3 python3-pip patch
+        export TIME_STAMP=$(date +%s)
+        echo Kolla Containers Build #: $TIME_STAMP
+        python3 -m venv .
+        . bin/activate
+        if [ "${{ matrix.openstack_version }}" == "master" ]; then KOLLA_BRANCH_NAME="master"; else KOLLA_BRANCH_NAME="stable/${{ matrix.openstack_version }}"; fi
+        echo Kolla Containers Build #: $TIME_STAMP
+        echo OpenStack Version: ${{ matrix.openstack_version }}
+        echo Kolla Branch Name: stable/$KOLLA_BRANCH_NAME
+        git clone -b ${KOLLA_BRANCH_NAME} https://opendev.org/openstack/kolla
+        cd kolla
+        pip install --upgrade pip setuptools docker
+        pip install -r requirements.txt
+        cd ..
+        kolla/tools/build.py \
+          --config-file kolla-build.conf \
+          --template-override kolla-template-overrides.j2 \
+          --base ${DISTRO} \
+          --base-tag ${DISTRO_VERSION} \
+          --tag ${{ matrix.openstack_version }}-${DISTRO}-${DISTRO_VERSION}-stn-${TIME_STAMP} \
+          --push
