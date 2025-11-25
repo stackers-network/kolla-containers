@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        openstack_version: [ '2025.1', '2024.2', '2024.1']
+        openstack_version: [ '2025.2', '2025.1', '2024.2']
 
     services:
       docker:
