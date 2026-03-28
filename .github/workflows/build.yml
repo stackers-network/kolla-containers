@@ -10,7 +10,7 @@ on:
 
 env:
   DISTRO: 'rocky'
-  DISTRO_VERSION: '9'
+  DISTRO_VERSION: '10'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        openstack_version: [ '2025.2', '2025.1', '2024.2']
+        openstack_version: [ '2025.2', '2025.1']
 
     services:
       docker:
