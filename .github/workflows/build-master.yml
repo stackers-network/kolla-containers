@@ -10,7 +10,7 @@ on:
 
 env:
   DISTRO: 'rocky'
-  DISTRO_VERSION: '9'
+  DISTRO_VERSION: '10'
 
 jobs:
   build:
